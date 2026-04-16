@@ -10,14 +10,17 @@ The system is tailored for the Sports and Large-Scale Venue vertical. It address
 ### Interactive Cortex Assistant
 The Cortex Assistant is a real-time AI concierge that provides attendees with navigation guidance and facility information based on live stadium congestion.
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/56deb181-5e19-4612-9c15-ed39a5dc15fc" />
+<img width="1920" height="1080" alt="Screenshot (1400)" src="https://github.com/user-attachments/assets/9545f271-97fe-43f4-be7f-31e685c99cdc" />
+
 
 
 ### Dynamic Operator Interface
 The dashboard provides a high-fidelity visual representation of stadium topology, featuring predictive density heatmaps and an autonomous AI Orchestrator console for real-time crowd management.
 
-<img width="1920" height="1080" alt="Screenshot (1401)" src="https://github.com/user-attachments/assets/f2ef3e0e-383e-4ab7-844a-80cf5e8ff541" />
-<img width="1920" height="1080" alt="Screenshot (1402)" src="https://github.com/user-attachments/assets/29945ab1-1e6b-4387-8d9d-2b55bc3336f5" />
+
+<img width="1920" height="1080" alt="Screenshot (1401)" src="https://github.com/user-attachments/assets/fb55eadf-8618-42d0-a676-d5d624903565" />
+<img width="1920" height="1080" alt="Screenshot (1402)" src="https://github.com/user-attachments/assets/37cd0507-0b77-4504-9f72-de66d18f060a" />
+
 
 
 ## Approach and Logic

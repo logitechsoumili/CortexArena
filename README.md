@@ -10,12 +10,15 @@ The system is tailored for the Sports and Large-Scale Venue vertical. It address
 ### Interactive Cortex Assistant
 The Cortex Assistant is a real-time AI concierge that provides attendees with navigation guidance and facility information based on live stadium congestion.
 
-![Cortex Assistant Placeholder](path/to/chatbot_screenshot.png)
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/56deb181-5e19-4612-9c15-ed39a5dc15fc" />
+
 
 ### Dynamic Operator Interface
 The dashboard provides a high-fidelity visual representation of stadium topology, featuring predictive density heatmaps and an autonomous AI Orchestrator console for real-time crowd management.
 
-![Dashboard Interface Placeholder](path/to/interface_screenshot.png)
+<img width="1920" height="1080" alt="Screenshot (1401)" src="https://github.com/user-attachments/assets/f2ef3e0e-383e-4ab7-844a-80cf5e8ff541" />
+<img width="1920" height="1080" alt="Screenshot (1402)" src="https://github.com/user-attachments/assets/29945ab1-1e6b-4387-8d9d-2b55bc3336f5" />
+
 
 ## Approach and Logic
 The platform is built on a multi-layer architecture combining deterministic logic with generative intelligence:
@@ -55,10 +58,15 @@ During the design and implementation of Cortex Arena, the following assumptions 
 - Static Infrastructure: Fixed stadium layout during the event duration.
 
 ## Deployment
-The project is containerized using Docker and is successfully **deployed on Google Cloud Run**.
+Cortex Arena is deployed on Google Cloud Run using a containerized, serverless architecture.
 
-### Live Access
-The platform is accessible via the Cloud Run endpoints for both the frontend dashboard and backend API services.
+- Frontend (Next.js) and Backend (FastAPI) are deployed as separate services
+- Real-time communication is handled via secure HTTP and WebSocket (WSS)
+- Environment variables (e.g., GOOGLE_API_KEY) are managed securely through Cloud Run
+
+### Live Application
+Access the platform here:
+https://cortex-frontend-263130631276.asia-south1.run.app
 
 ### Prerequisites (For Local Development)
 - Google AI API Key (Set as `GOOGLE_API_KEY` in `.env`)

@@ -1,0 +1,198 @@
+@import "tailwindcss";
+
+:root {
+  --background: #020617;
+  --surface: #0f172a;
+  --foreground: #f8fafc;
+  --neon-cyan: #22d3ee;
+  --neon-purple: #a855f7;
+  --neon-blue: #3b82f6;
+  --warning-orange: #fb923c;
+  --critical-red: #ef4444;
+  --success-green: #10b981;
+  --concourse-blue: #1e293b;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: local('JetBrains Mono');
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--background);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(34, 211, 238, 0.06), transparent),
+    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(168, 85, 247, 0.04), transparent);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), 'Inter', system-ui, sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* ══════════════ Glass Panel ══════════════ */
+.glass-panel {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.4));
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(51, 65, 85, 0.4);
+  box-shadow:
+    0 0 0 1px rgba(34, 211, 238, 0.03),
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+/* ══════════════ Neon Effects ══════════════ */
+.neon-border {
+  box-shadow:
+    0 0 15px rgba(34, 211, 238, 0.15),
+    0 0 60px rgba(34, 211, 238, 0.05),
+    inset 0 0 15px rgba(34, 211, 238, 0.05);
+  border: 1px solid rgba(34, 211, 238, 0.3);
+}
+
+.neon-border-subtle {
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.08);
+  border: 1px solid rgba(34, 211, 238, 0.15);
+}
+
+.neon-text-cyan {
+  text-shadow: 0 0 10px rgba(34, 211, 238, 0.6), 0 0 40px rgba(34, 211, 238, 0.2);
+}
+
+.neon-text-purple {
+  text-shadow: 0 0 10px rgba(168, 85, 247, 0.6), 0 0 40px rgba(168, 85, 247, 0.2);
+}
+
+/* ══════════════ Animated Grid Background ══════════════ */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(34, 211, 238, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 211, 238, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ══════════════ Pulse Rings ══════════════ */
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+@keyframes rotate-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes rotate-reverse {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+@keyframes scan-line {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes typing-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 2s ease-out infinite;
+}
+
+.animate-rotate-slow {
+  animation: rotate-slow 30s linear infinite;
+}
+
+.animate-rotate-reverse {
+  animation: rotate-reverse 25s linear infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.08), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* ══════════════ Scrollbar ══════════════ */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(51, 65, 85, 0.5);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neon-cyan);
+  box-shadow: 0 0 8px var(--neon-cyan);
+}
+
+/* ══════════════ Selection ══════════════ */
+::selection {
+  background: rgba(34, 211, 238, 0.3);
+  color: #fff;
+}
+
+/* ══════════════ Dashboard Layout ══════════════ */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  align-items: stretch;
+}
+
+@media (min-width: 1100px) {
+  .dashboard-grid {
+    grid-template-columns: 7fr 5fr;
+  }
+}
+
+.kpi-ribbon {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.75rem;
+}
+
+@media (max-width: 768px) {
+  .kpi-ribbon {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

@@ -19,7 +19,8 @@ The dashboard provides a high-fidelity visual representation of stadium topology
 
 
 <img width="1920" height="1080" alt="Screenshot (1401)" src="https://github.com/user-attachments/assets/fb55eadf-8618-42d0-a676-d5d624903565" />
-<img width="1920" height="1080" alt="Screenshot (1402)" src="https://github.com/user-attachments/assets/37cd0507-0b77-4504-9f72-de66d18f060a" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/7cddd345-4abd-4d10-a233-05ab5420aa95" />
+
 
 
 

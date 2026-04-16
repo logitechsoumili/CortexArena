@@ -1,35 +1,27 @@
 from .simulation_engine import SimulationEngine
 from .schemas import Zone, FlowArrow
-import os
 import threading
-from google import genai
-
+from .gemini_utils import call_gemini
 
 class Orchestrator:
     def __init__(self, engine: SimulationEngine):
         self.engine = engine
         self.active_interventions: set = set()
-        
-        # Initialize Gemini
-        api_key = os.getenv("GOOGLE_API_KEY")
-        self.gemini_active = False
-        if api_key:
-            try:
-                self.client = genai.Client(api_key=api_key)
-                self.gemini_active = True
-            except Exception as e:
-                print(f"Gemini init failed: {e}")
 
     def run_cycle(self):
         """Monitor simulation and make decisions. Skips actions in manual mode."""
         if self.engine.ai_mode == "manual":
             return
+            
         self._check_congestion()
         self._balance_load()
         self._predictive_alerts()
         
-        # Periodic high-level AI insight (every 40 ticks ~ 1.5 min)
-        if self.gemini_active and self.engine.tick % 40 == 0:
+        # Periodic high-level AI insight (every 150 ticks ~ 2.5 min)
+        # ONLY if any zone is in 'critical' status
+        has_critical = any(z.status == "critical" for z in self.engine.zones.values())
+        
+        if has_critical and self.engine.tick > 0 and self.engine.tick % 150 == 0:
             threading.Thread(target=self._generate_gemini_insight).start()
 
     # ── Congestion Detection + Response ──
@@ -40,16 +32,13 @@ class Orchestrator:
 
             if zone.status == "critical" and zone_id not in self.active_interventions:
                 self.active_interventions.add(zone_id)
-                # TRIGGER log
                 self.engine.add_log(
                     f"TRIGGER: {zone.name} exceeded 90% capacity ({int(density*100)}%). Threshold breach detected.",
                     level="warning",
                     category="trigger",
                 )
-                # ACTION
                 impact = self._apply_redirection(zone)
                 if impact:
-                    # IMPACT log
                     self.engine.add_log(
                         f"IMPACT: Expected to reduce congestion in {impact} zone(s) within 30s.",
                         level="info",
@@ -79,7 +68,6 @@ class Orchestrator:
                 category="action",
             )
 
-            # Record flow arrow
             self.engine.flow_arrows.append(
                 FlowArrow(
                     from_zone=congested_zone.id,
@@ -87,7 +75,7 @@ class Orchestrator:
                     intensity=min(1.0, transfer / 200),
                 )
             )
-            return 2  # estimated zones impacted
+            return 2 
         return 0
 
     # ── Aggregate Load Balancing ──
@@ -111,7 +99,7 @@ class Orchestrator:
     def _predictive_alerts(self):
         """Alert operators about future congestion from predictions."""
         if self.engine.tick % 5 != 0:
-            return  # Only check every 5 ticks to avoid log spam
+            return 
 
         for zone in self.engine.zones.values():
             if zone.status == "nominal" and zone.predicted_status in ["congested", "critical"]:
@@ -121,7 +109,6 @@ class Orchestrator:
                     level="warning",
                     category="trigger",
                 )
-                # Pre-emptive mild redirection
                 neighbors = [self.engine.zones[n_id] for n_id in zone.neighbors]
                 best = min(neighbors, key=lambda z: z.occupancy)
                 if best.density < 0.5:
@@ -141,7 +128,6 @@ class Orchestrator:
     def _generate_gemini_insight(self):
         """Generate high-level situational analysis using Gemini."""
         try:
-            # Prepare a concise summary for Gemini
             high_density_zones = [
                 f"{z.name} ({int(z.density*100)}%)" 
                 for z in self.engine.zones.values() if z.density > 0.7
@@ -158,20 +144,19 @@ class Orchestrator:
             Start the response with "AI INSIGHT: "
             """
             
-            response = self.client.models.generate_content(
-                model="gemini-2.5-flash",
-                contents=prompt
-            )
-            insight_text = response.text.strip()
+            insight_text = call_gemini(prompt, source="orchestrator")
             
-            # Label strictly as AI INSIGHT
-            if not insight_text.startswith("AI INSIGHT:"):
-                insight_text = f"AI INSIGHT: {insight_text}"
+            if insight_text == "RATE_LIMITED":
+                return
                 
-            self.engine.add_log(
-                insight_text,
-                level="info",
-                category="ai_insight"
-            )
+            if insight_text:
+                if not insight_text.startswith("AI INSIGHT:"):
+                    insight_text = f"AI INSIGHT: {insight_text}"
+                    
+                self.engine.add_log(
+                    insight_text,
+                    level="info",
+                    category="ai_insight"
+                )
         except Exception as e:
-            print(f"Gemini insight error: {e}")
+            print(f"[Gemini Insight Error]: {e}")

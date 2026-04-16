@@ -37,6 +37,3 @@ frontend/.pnpm-debug.log*
 .idea/
 *.swp
 *.swo
-
-# Docker
-.dockerignore

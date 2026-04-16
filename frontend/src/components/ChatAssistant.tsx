@@ -26,7 +26,8 @@ export default function ChatAssistant() {
     setIsLoading(true);
 
     try {
-      const resp = await fetch("http://localhost:8000/api/chat", {
+      const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+      const resp = await fetch(`${API_URL}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: userMsg }),

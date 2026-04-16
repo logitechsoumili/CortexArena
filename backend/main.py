@@ -16,9 +16,15 @@ from google import genai
 
 app = FastAPI(title="Cortex Arena API")
 
+# CORS – set ALLOWED_ORIGINS env var to restrict in production
+# e.g. ALLOWED_ORIGINS=https://frontend-xyz.run.app
+raw_origins = os.getenv("ALLOWED_ORIGINS", "*")
+cors_origins = [o.strip() for o in raw_origins.split(",")]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=cors_origins,
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )

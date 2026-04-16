@@ -21,9 +21,11 @@ const scenarios = [
 export default function ControlPanel({ currentScenario, aiMode = "autonomous" }: ControlPanelProps) {
   const [loading, setLoading] = useState<string | null>(null);
 
+  const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+
   const triggerScenario = async (id: string) => {
     setLoading(id);
-    try { await fetch(`http://localhost:8000/simulate/${id}`, { method: "POST" }); } catch {}
+    try { await fetch(`${API_URL}/simulate/${id}`, { method: "POST" }); } catch {}
     setTimeout(() => setLoading(null), 800);
   };
 

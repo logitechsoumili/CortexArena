@@ -1,4 +1,3 @@
-# Build stage
 FROM python:3.12-slim
 
 WORKDIR /app
@@ -7,8 +6,9 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy source code
+# Copy source code (exclude .env – secrets injected by Cloud Run at runtime)
 COPY . .
+RUN rm -f .env
 
 # Expose port (Cloud Run uses PORT env var)
 EXPOSE 8080

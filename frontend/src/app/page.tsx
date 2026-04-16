@@ -148,7 +148,9 @@ export default function CortexArenaDashboard() {
     let ws: WebSocket;
     let reconnectTimer: ReturnType<typeof setTimeout>;
     const connect = () => {
-      ws = new WebSocket("ws://localhost:8000/ws/simulation");
+      const backendBase = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+      const wsBase = backendBase.replace(/^http/, "ws");
+      ws = new WebSocket(`${wsBase}/ws/simulation`);
       ws.onopen = () => { setConnected(true); setError(false); };
       ws.onmessage = (event) => setState(JSON.parse(event.data));
       ws.onerror = () => setError(true);
@@ -161,7 +163,8 @@ export default function CortexArenaDashboard() {
   const toggleAIMode = async () => {
     if (!state) return;
     const newMode = state.ai_mode === "autonomous" ? "manual" : "autonomous";
-    try { await fetch(`http://localhost:8000/mode/${newMode}`, { method: "POST" }); } catch {}
+    const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+    try { await fetch(`${API_URL}/mode/${newMode}`, { method: "POST" }); } catch {}
   };
 
   /* ═══════ Loading Screen ═══════ */

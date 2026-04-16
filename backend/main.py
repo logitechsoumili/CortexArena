@@ -1,4 +1,10 @@
 import asyncio
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from core.simulation_engine import SimulationEngine
@@ -7,7 +13,6 @@ from api.websocket_manager import manager
 from core.facilities import get_facility_status
 from pydantic import BaseModel
 from google import genai
-import os
 
 app = FastAPI(title="Cortex Arena API")
 
@@ -130,7 +135,7 @@ async def chat(request: ChatRequest):
 
         client = genai.Client(api_key=api_key)
         response = client.models.generate_content(
-            model="gemini-1.5-flash",
+            model="gemini-2.5-flash",
             contents=prompt
         )
         return {"response": response.text.strip()}
@@ -138,7 +143,6 @@ async def chat(request: ChatRequest):
     except Exception as e:
         print(f"Chat error: {e}")
         return {"response": "System error. My diagnostics indicate a connection interruption."}
-
 
 if __name__ == "__main__":
     import uvicorn

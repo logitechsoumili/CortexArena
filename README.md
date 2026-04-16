@@ -5,50 +5,62 @@ Cortex Arena is a predictive crowd management platform designed for large-scale 
 ## Chosen Vertical
 The system is tailored for the Sports and Large-Scale Venue vertical. It addresses the unique challenges of high-density spikes common in stadiums, such as halftime rushes, goal-scoring celebrations, and synchronized mass exits.
 
+## Platform Showcase
+
+### Interactive Cortex Assistant
+The Cortex Assistant is a real-time AI concierge that provides attendees with navigation guidance and facility information based on live stadium congestion.
+
+![Cortex Assistant Placeholder](path/to/chatbot_screenshot.png)
+
+### Dynamic Operator Interface
+The dashboard provides a high-fidelity visual representation of stadium topology, featuring predictive density heatmaps and an autonomous AI Orchestrator console for real-time crowd management.
+
+![Dashboard Interface Placeholder](path/to/interface_screenshot.png)
+
 ## Approach and Logic
 The platform is built on a multi-layer architecture combining deterministic logic with generative intelligence:
 
 1. Backend (Python/FastAPI):
-- The core logic resides in a custom-built Simulation Engine that models crowd dynamics across 24 distinct stadium zones.
-- An AI Orchestrator acts as the "brain," monitoring zone densities and triggering interventions when thresholds are breached.
-- Supplementary Intelligence: A Google Gemini integration provides high-level situational insights, explaining crowd behavior patterns in the operator console.
-- Logic follows a reactive and predictive pattern: the system projects density trends 90 seconds into the future and applies pre-emptive logic to mitigate forecasted bottlenecks.
+- **Simulation Engine**: A custom-built engine modeling crowd dynamics across 24 distinct stadium zones.
+- **AI Orchestrator**: Monitors zone densities and triggers interventions. Now features an **Autonomous/Manual toggle** for intervention control.
+- **Predictive Analytics**: The system projects density trends 90 seconds into the future, allowing for pre-emptive bottlenecks mitigation.
+- **Gemini Optimization**: Integrated **Gemini Flash Lite** with a global cooldown and response caching to ensure high reliability and mitigate rate limits (429 errors).
 
 2. Frontend (Next.js/React):
-- A websocket-driven dashboard provides sub-second latency updates from the simulation.
-- Visual elements (Flow Arrows, Heatmaps) use Framer Motion for high-fidelity animations, ensuring that operators and attendees see smooth transitions.
-- Interactive Concierge: A holographic chat assistant powered by Gemini allows attendees to query the system for facilities and navigation.
+- **Real-Time Telemetry**: Websocket-driven dashboard providing sub-second latency updates.
+- **Visual Fidelity**: Uses Framer Motion for smooth transitions in flow arrows and heatmaps.
+- **Guidance System**: Real-time attendee routing via digital signage and the interactive concierge.
 
 ## How the Solution Works
 The system manages crowd flow through four primary mechanisms:
 
-1. Real-Time Monitoring:
-- Every zone tracks its capacity and occupancy. Statuses are categorized as Nominal (<75%), Congested (75-90%), and Critical (>90%).
-- Wait times are calculated using an exponential growth function based on density.
+1. **Real-Time Monitoring**:
+- Tracks capacity and occupancy across all zones (Nominal, Congested, Critical).
+- Impact metrics include Total Occupancy, Congested Zones, Flow Efficiency, and Avg. Wait Time.
 
-2. Autonomous Interventions:
-- When a zone hits Critical status, the AI Orchestrator automatically triggers "Digital Signage Redirects."
-- The logic identifies the least crowded neighboring zone and reroutes traffic, visualized by intensity-weighted flow arrows.
+2. **Autonomous Interventions**:
+- Automatically triggers redirects when zones hit critical thresholds.
+- Identifies the least crowded neighboring zones to reroute traffic effectively.
 
-3. Situational AI Insights:
-- The system analyzes aggregate stadium metrics to provide "AI INSIGHT" logs in the console. These insights explain the *why* behind crowd movements and suggest long-term strategic adjustments.
+3. **Situational AI Insights**:
+- Provides high-level situational awareness logs, explaining the *why* behind automated actions.
 
-4. Interactive AI Assistant:
-- A floating chat assistant (Cortex Assistant) helps attendees find amenities like washrooms, food stalls, and exits.
-- It provides live recommendations based on current zone traffic, directing users to the least crowded facilities in real-time.
+4. **Reliability Layer**:
+- Implements a robust backend with retry logic, fallbacks, and cost-efficient LLM utilization.
 
 ## Assumptions Made
 During the design and implementation of Cortex Arena, the following assumptions were made:
-
-- High Compliance: The model assumes that a significant percentage of attendees will follow digital signage and AI-guided recommendations once alerted.
-- Homogeneous Movement: The simulation assumes attendees move at a consistent average speed unless slowed down by physical density.
-- Network Reliability: The solution assumes consistent WebSocket connectivity throughout the venue for real-time telemetry.
-- Static Infrastructure: The stadium layout is assumed to be fixed for the duration of the event.
+- High Compliance: Attendees follow digital signage and AI-guided recommendations.
+- Network Reliability: Consistent WebSocket connectivity for real-time telemetry.
+- Static Infrastructure: Fixed stadium layout during the event duration.
 
 ## Deployment
-The project is containerized using Docker and is configured for deployment on Google Cloud Run.
+The project is containerized using Docker and is successfully **deployed on Google Cloud Run**.
 
-### Prerequisites
+### Live Access
+The platform is accessible via the Cloud Run endpoints for both the frontend dashboard and backend API services.
+
+### Prerequisites (For Local Development)
 - Google AI API Key (Set as `GOOGLE_API_KEY` in `.env`)
 - Python 3.11+
 - Node.js 20+

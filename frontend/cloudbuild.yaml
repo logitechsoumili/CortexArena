@@ -1,0 +1,10 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: [
+    'build',
+    '-t', 'gcr.io/$PROJECT_ID/cortex-frontend',
+    '--build-arg', 'NEXT_PUBLIC_BACKEND_URL=$_BACKEND_URL',
+    '.'
+  ]
+images:
+- 'gcr.io/$PROJECT_ID/cortex-frontend'

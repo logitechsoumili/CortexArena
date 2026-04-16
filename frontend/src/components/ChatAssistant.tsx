@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare, X, Send, Sparkles, User, Loader2 } from "lucide-react";
+import { API_BASE } from "@/lib/config";
 
 export default function ChatAssistant() {
   const [isOpen, setIsOpen] = useState(false);
@@ -26,8 +27,7 @@ export default function ChatAssistant() {
     setIsLoading(true);
 
     try {
-      const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
-      const resp = await fetch(`${API_URL}/api/chat`, {
+      const resp = await fetch(`${API_BASE}/api/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: userMsg }),

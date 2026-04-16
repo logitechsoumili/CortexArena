@@ -13,6 +13,7 @@ import AIConsole from "@/components/AIConsole";
 import ControlPanel from "@/components/ControlPanel";
 import UserInsights from "@/components/UserInsights";
 import ChatAssistant from "@/components/ChatAssistant";
+import { API_BASE, WS_BASE } from "@/lib/config";
 
 /* ═══════════ Animated Counter ═══════════ */
 function useAnimatedValue(target: number, duration = 600) {
@@ -148,9 +149,7 @@ export default function CortexArenaDashboard() {
     let ws: WebSocket;
     let reconnectTimer: ReturnType<typeof setTimeout>;
     const connect = () => {
-      const backendBase = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
-      const wsBase = backendBase.replace(/^http/, "ws");
-      ws = new WebSocket(`${wsBase}/ws/simulation`);
+      ws = new WebSocket(`${WS_BASE}/ws/simulation`);
       ws.onopen = () => { setConnected(true); setError(false); };
       ws.onmessage = (event) => setState(JSON.parse(event.data));
       ws.onerror = () => setError(true);
@@ -163,8 +162,7 @@ export default function CortexArenaDashboard() {
   const toggleAIMode = async () => {
     if (!state) return;
     const newMode = state.ai_mode === "autonomous" ? "manual" : "autonomous";
-    const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
-    try { await fetch(`${API_URL}/mode/${newMode}`, { method: "POST" }); } catch {}
+    try { await fetch(`${API_BASE}/mode/${newMode}`, { method: "POST" }); } catch {}
   };
 
   /* ═══════ Loading Screen ═══════ */

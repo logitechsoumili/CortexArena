@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Zap, Users, Play, LogOut, Goal, Loader2, Wifi, Brain, Hand } from "lucide-react";
+import { API_BASE } from "@/lib/config";
 
 /* ═══════════ Types ═══════════ */
 interface ControlPanelProps {
@@ -21,11 +22,9 @@ const scenarios = [
 export default function ControlPanel({ currentScenario, aiMode = "autonomous" }: ControlPanelProps) {
   const [loading, setLoading] = useState<string | null>(null);
 
-  const API_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
-
   const triggerScenario = async (id: string) => {
     setLoading(id);
-    try { await fetch(`${API_URL}/simulate/${id}`, { method: "POST" }); } catch {}
+    try { await fetch(`${API_BASE}/simulate/${id}`, { method: "POST" }); } catch {}
     setTimeout(() => setLoading(null), 800);
   };
 

@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Terminal, AlertTriangle, CheckCircle2, Info, ChevronRight,
-  Zap, ArrowRight, Target, Settings
+  Zap, ArrowRight, Target, Settings, Brain
 } from "lucide-react";
 
 /* ═══════════ Types ═══════════ */
@@ -63,6 +63,13 @@ const categoryConfig: Record<string, { icon: React.ReactNode; color: string; bor
     bg: "bg-transparent",
     badge: "INFO",
   },
+  ai_insight: {
+    icon: <Brain size={12} />,
+    color: "text-purple-300",
+    border: "border-l-purple-500/60",
+    bg: "bg-purple-500/5",
+    badge: "AI INSIGHT",
+  },
 };
 
 const badgeColors: Record<string, string> = {
@@ -72,6 +79,7 @@ const badgeColors: Record<string, string> = {
   RESOLVED: "text-emerald-400 bg-emerald-500/10",
   MODE: "text-purple-400 bg-purple-500/10",
   INFO: "text-cyan-500 bg-cyan-500/10",
+  "AI INSIGHT": "text-purple-300 bg-purple-500/20 shadow-[0_0_10px_rgba(168,85,247,0.2)]",
 };
 
 /* ═══════════ Log Entry ═══════════ */

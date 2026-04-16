@@ -4,6 +4,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from core.simulation_engine import SimulationEngine
 from core.orchestrator import Orchestrator
 from api.websocket_manager import manager
+from core.facilities import get_facility_status
+from pydantic import BaseModel
+from google import genai
+import os
 
 app = FastAPI(title="Cortex Arena API")
 
@@ -87,6 +91,53 @@ async def set_mode(mode: str):
 @app.get("/health")
 def health():
     return {"status": "alive", "engine": "running", "mode": engine.ai_mode}
+
+
+class ChatRequest(BaseModel):
+    message: str
+
+
+@app.post("/api/chat")
+async def chat(request: ChatRequest):
+    api_key = os.getenv("GOOGLE_API_KEY")
+    if not api_key:
+        return {"response": "I'm sorry, my neural uplink is currently offline. Please configure a Google API Key."}
+
+    try:
+        # 1. Gather real-time context
+        food_status = get_facility_status("food", engine.zones)
+        washroom_status = get_facility_status("washroom", engine.zones)
+        exit_status = get_facility_status("exit", engine.zones)
+
+        # 2. Build Prompt
+        prompt = f"""
+        You are the 'Cortex Arena' AI Concierge. Use the current stadium telemetry below 
+        to answer the user's question accurately. 
+        Current Scenario: {engine.current_scenario}
+        
+        FACILITY DATA (Name | Zone | Density):
+        - WASHROOMS: {", ".join([f"{f['name']} ({f['density']*100}%)" for f in washroom_status])}
+        - FOOD STANDS: {", ".join([f"{f['name']} ({f['density']*100}%)" for f in food_status])}
+        - EXITS: {", ".join([f"{f['name']} ({f['density']*100}%)" for f in exit_status])}
+
+        RULES:
+        - Be concise and professional. Use a slightly futuristic 'Cortex AI' tone.
+        - Recommend the LOWEST DENSITY facility when asked for 'nearest' or 'best' option.
+        - If a zone is 'critical' (>90%), advise the user to avoid it for their safety and comfort.
+
+        USER QUESTION: {request.message}
+        """
+
+        client = genai.Client(api_key=api_key)
+        response = client.models.generate_content(
+            model="gemini-1.5-flash",
+            contents=prompt
+        )
+        return {"response": response.text.strip()}
+
+    except Exception as e:
+        print(f"Chat error: {e}")
+        return {"response": "System error. My diagnostics indicate a connection interruption."}
 
 
 if __name__ == "__main__":

@@ -12,6 +12,7 @@ import StadiumMap from "@/components/StadiumMap";
 import AIConsole from "@/components/AIConsole";
 import ControlPanel from "@/components/ControlPanel";
 import UserInsights from "@/components/UserInsights";
+import ChatAssistant from "@/components/ChatAssistant";
 
 /* ═══════════ Animated Counter ═══════════ */
 function useAnimatedValue(target: number, duration = 600) {
@@ -326,6 +327,9 @@ export default function CortexArenaDashboard() {
             </div>
           </div>
         </div>
+
+        {/* ═══════ AI Assistant ═══════ */}
+        <ChatAssistant />
 
         {/* ═══════ Footer ═══════ */}
         <motion.footer initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}

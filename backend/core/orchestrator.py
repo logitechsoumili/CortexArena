@@ -1,11 +1,24 @@
 from .simulation_engine import SimulationEngine
 from .schemas import Zone, FlowArrow
+import os
+import threading
+from google import genai
 
 
 class Orchestrator:
     def __init__(self, engine: SimulationEngine):
         self.engine = engine
         self.active_interventions: set = set()
+        
+        # Initialize Gemini
+        api_key = os.getenv("GOOGLE_API_KEY")
+        self.gemini_active = False
+        if api_key:
+            try:
+                self.client = genai.Client(api_key=api_key)
+                self.gemini_active = True
+            except Exception as e:
+                print(f"Gemini init failed: {e}")
 
     def run_cycle(self):
         """Monitor simulation and make decisions. Skips actions in manual mode."""
@@ -14,6 +27,10 @@ class Orchestrator:
         self._check_congestion()
         self._balance_load()
         self._predictive_alerts()
+        
+        # Periodic high-level AI insight (every 40 ticks ~ 1.5 min)
+        if self.gemini_active and self.engine.tick % 40 == 0:
+            threading.Thread(target=self._generate_gemini_insight).start()
 
     # ── Congestion Detection + Response ──
     def _check_congestion(self):
@@ -119,3 +136,42 @@ class Orchestrator:
                     self.engine.flow_arrows.append(
                         FlowArrow(from_zone=zone.id, to_zone=best.id, intensity=0.3)
                     )
+
+    # ── Gemini Insights (Supplementary) ──
+    def _generate_gemini_insight(self):
+        """Generate high-level situational analysis using Gemini."""
+        try:
+            # Prepare a concise summary for Gemini
+            high_density_zones = [
+                f"{z.name} ({int(z.density*100)}%)" 
+                for z in self.engine.zones.values() if z.density > 0.7
+            ]
+            
+            prompt = f"""
+            You are the "Cortex AI" stadium orchestrator. 
+            Current Scenario: {self.engine.current_scenario}
+            Congested Zones: {', '.join(high_density_zones) if high_density_zones else 'None'}
+            Overall Efficiency: {self.engine.get_state().kpis.avg_flow_efficiency}%
+            
+            Provide ONE brief (15-20 words) high-level situational insight OR explanation 
+            for the current stadium state. Focus on crowd psychology or strategic flow.
+            Start the response with "AI INSIGHT: "
+            """
+            
+            response = self.client.models.generate_content(
+                model="gemini-1.5-flash",
+                contents=prompt
+            )
+            insight_text = response.text.strip()
+            
+            # Label strictly as AI INSIGHT
+            if not insight_text.startswith("AI INSIGHT:"):
+                insight_text = f"AI INSIGHT: {insight_text}"
+                
+            self.engine.add_log(
+                insight_text,
+                level="info",
+                category="ai_insight"
+            )
+        except Exception as e:
+            print(f"Gemini insight error: {e}")
